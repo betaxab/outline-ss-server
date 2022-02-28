@@ -267,7 +267,7 @@ func (s *tcpService) handleConnection(listenerPort int, clientTCPConn *net.TCPCo
 		}
 		defer tgtConn.Close()
 
-		logger.Debugf("proxy %s <-> %s", clientTCPConn.RemoteAddr().String(), tgtConn.RemoteAddr().String())
+		logger.Infof("proxy %s <-> %s", clientTCPConn.RemoteAddr().String(), tgtAddr)
 		ssw := ss.NewShadowsocksWriter(clientConn, cipherEntry.Cipher)
 		ssw.SetSaltGenerator(cipherEntry.SaltGenerator)
 
