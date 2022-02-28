@@ -56,8 +56,21 @@ func init() {
 		// Add color only if the output is the terminal
 		prefix = strings.Join([]string{"%{color}", prefix, "%{color:reset}"}, "")
 	}
+
+	logFile, err := os.OpenFile("access.log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o600)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var logformat = logging.MustStringFormatter(
+		`%{time:2006-01-02 15:04:05.000} %{message}`,
+	)
+
+	logToFile := logging.NewLogBackend(logFile, "", 0)
+	logToFileBackend := logging.NewBackendFormatter(logToFile, logformat)
+
 	logging.SetFormatter(logging.MustStringFormatter(strings.Join([]string{prefix, " %{message}"}, "")))
-	logging.SetBackend(logging.NewLogBackend(os.Stderr, "", 0))
+	logging.SetBackend(logging.NewLogBackend(os.Stderr, "", 0), logToFileBackend)
 	logger = logging.MustGetLogger("")
 }
 
