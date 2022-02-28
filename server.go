@@ -63,7 +63,7 @@ func init() {
 	}
 
 	var logformat = logging.MustStringFormatter(
-		`%{time:2006-01-02 15:04:05.000} %{message}`,
+		`%{time:2006-01-02 15:04:05} %{message}`,
 	)
 
 	logToFile := logging.NewLogBackend(logFile, "", 0)
