@@ -290,7 +290,7 @@ func (h *tcpHandler) handleConnection(listenerPort int, clientConn transport.Str
 	defer tgtConn.Close()
 
 	// 4. Bridge the client and target connections
-	logger.Debugf("proxy %s <-> %s", clientConn.RemoteAddr().String(), tgtConn.RemoteAddr().String())
+	logger.Infof("%s accepted tcp:%s userid: %s", clientConn.RemoteAddr().String(), tgtAddr, cipherEntry.ID)
 	ssw := shadowsocks.NewWriter(clientConn, cipherEntry.CryptoKey)
 	ssw.SetSaltGenerator(cipherEntry.SaltGenerator)
 
