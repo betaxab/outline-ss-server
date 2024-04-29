@@ -290,14 +290,14 @@ func getProxyRequest(clientConn transport.StreamConn) (string, error) {
 	return tgtAddr.String(), nil
 }
 
-func proxyConnection(ctx context.Context, dialer transport.StreamDialer, tgtAddr string, clientConn transport.StreamConn) *onet.ConnectionError {
+func proxyConnection(ctx context.Context, dialer transport.StreamDialer, tgtAddr string, clientConn transport.StreamConn, id string) *onet.ConnectionError {
 	tgtConn, dialErr := dialer.DialStream(ctx, tgtAddr)
 	if dialErr != nil {
 		// We don't drain so dial errors and invalid addresses are communicated quickly.
 		return ensureConnectionError(dialErr, "ERR_CONNECT", "Failed to connect to target")
 	}
 	defer tgtConn.Close()
-	logger.Debugf("proxy %s <-> %s", clientConn.RemoteAddr().String(), tgtConn.RemoteAddr().String())
+	logger.Infof("%s accepted tcp:%s userid: %s", clientConn.RemoteAddr().String(), tgtAddr, id)
 
 	fromClientErrCh := make(chan error)
 	go func() {
@@ -365,7 +365,7 @@ func (h *tcpHandler) handleConnection(ctx context.Context, outerConn transport.S
 		tgtConn = metrics.MeasureConn(tgtConn, &proxyMetrics.ProxyTarget, &proxyMetrics.TargetProxy)
 		return tgtConn, nil
 	})
-	return id, proxyConnection(ctx, dialer, tgtAddr, innerConn)
+	return id, proxyConnection(ctx, dialer, tgtAddr, innerConn, id)
 }
 
 // Keep the connection open until we hit the authentication deadline to protect against probing attacks
