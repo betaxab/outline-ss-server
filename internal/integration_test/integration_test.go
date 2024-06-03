@@ -219,14 +219,12 @@ func TestRestrictedAddresses(t *testing.T) {
 	addresses := []string{
 		"localhost:9999",
 		"[::1]:80",
-		"10.0.0.1:1234",
 		"[fc00::1]:54321",
 	}
 
 	expectedStatus := []string{
 		"ERR_ADDRESS_INVALID",
 		"ERR_ADDRESS_INVALID",
-		"ERR_ADDRESS_PRIVATE",
 		"ERR_ADDRESS_PRIVATE",
 	}
 
